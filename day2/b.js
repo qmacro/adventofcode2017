@@ -9,20 +9,20 @@ const
 
 		const
 			/**
-			 * numList
-			 * Turns a string of tab-separated number strings into a
-			 * list of actual numbers.
-			 * numlist('1\t2\t3') -> [1,2,3]
-			 */
-			numList = R.compose(R.map(R.multiply(1)), R.split(/\s/)),
-
-			/**
 			 * isInt
 			 * Predicate function that says if a number is an integer or not
 			 * isInt(1.23) -> false
 			 * isInt(1) -> true
 			 */
 			isInt = x => x === Math.floor(x),
+
+			/**
+			 * numList
+			 * Turns a string of tab-separated number strings into a
+			 * list of actual numbers.
+			 * numList('1\t2\t3') -> [1,2,3]
+			 */
+			numList = R.compose(R.map(R.multiply(1)), R.split(/\s/)),
 
 			/**
 			 * numMatrix
@@ -82,7 +82,7 @@ const
 	];
 
 // Execute tests, all should return true
-// console.log(R.all(([i, o]) => solve(i) == o, tests));
+console.log(R.all(([i, o]) => solve(i) == o, tests));
 
 // Invoke solution on input
 require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
