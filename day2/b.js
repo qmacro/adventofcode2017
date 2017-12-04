@@ -68,12 +68,12 @@ const
 				)
 			);
 
-		x = numMatrix(x)[0]
-		x
-		// y = R.filter(isInt, R.map(R.apply(R.divide), R.chain(R.zip(x), divisors(x))))
-		y = evenDiv([5,9,2,8])
-		y 
-
+		/**
+		 * OK, we're ready. Turn the input string into a number matrix,
+		 * map the evenDiv function over each of the rows to get a value
+		 * and then add them together.
+		 */
+		return R.sum(R.map(evenDiv, numMatrix(x)));
 
 	},
 
@@ -83,9 +83,8 @@ const
 
 // Execute tests, all should return true
 // console.log(R.all(([i, o]) => solve(i) == o, tests));
-solve(tests[0][0])
 
 // Invoke solution on input
 require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
-	// console.log(solve(data));
+	console.log(solve(data));
 });
