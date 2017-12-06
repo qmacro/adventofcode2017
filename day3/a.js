@@ -32,20 +32,8 @@ const
 			nthOdd = R.compose(R.divide(R.__, 2), R.dec),
 			stepsIn = x => Math.floor(nthOdd(x));
 		
-		// What's the index (into the [SE, SW, ])
-		//   R.findIndex(highWaterMark(29), corners)
-		//   stepsIn(5)
-		// Calculate the steps back to centre, based on which side of the concentric
-		// square we're starting from. In X + Y format.
-
-		// Corner Index
-		let cornerIndex = R.findIndex(highWaterMark(x), corners);
-
-		return (stepsIn + Math.abs(R.find(highWaterMark(x), corners) - midPoint - x));
-
-
-		// return [concentricSquare, sideDistance, midPoint, corners];
-		return 1;
+		// Calculate the steps back to centre, the steps in plus steps to the middle.
+		return (stepsIn(concentricSquare) + Math.abs(R.find(highWaterMark(x), corners) - midPoint - x));
 
 	},
 
@@ -56,20 +44,10 @@ const
 		[1024, 31]
 	];
 
-console.log(solve(43));
-
 // Execute tests, all should return true
 // console.log(R.all(([i, o]) => solve(i) == o, tests));
 
 // Invoke solution on input
-// require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
-// 	console.log(solve(data));
-// });
-
-// const
-// R = require('ramda'),
-// corners = [13, 17, 21, 25],
-// val = 14;
-
-// let x = R.find(x => val <= x, corners);
-// x 
+require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
+	console.log(solve(data));
+});
