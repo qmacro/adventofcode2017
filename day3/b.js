@@ -64,43 +64,48 @@ const
 
 		}
 		
-		// Instantiate the generator
-		const gen = relativeStep();
-		
-		// Show the first 50 X,Y coordinates of the spiral
-		R.reduce((a, _) => {
-			let [x, y] = a,
-				[xn, yn] = gen.next().value;
-			x = x + xn;
-			y = y + yn;
-			console.log([x, y]);
-			return [x, y];
-		}, [0, 0], R.range(0,50));
+		const
 
-		return 1;
+			// A function to work out whether two X,Y cells are adjacent
+			isAdjacentCell = R.curry((cell1, cell2) => {
+				let x = Math.abs(cell1.x - cell2.x),
+					y = Math.abs(cell1.y - cell2.y);
+				return x <= 1 && y <= 1;
+			}),
 
-	},
+			// Instantiate the generator
+			gen = relativeStep();
 
-	tests = [
-		[[ 0, 0], 1],
-		[[ 1, 0], 1],
-		[[ 1, 1], 2],
-		[[ 0, 1], 4],
-		[[-1, 1], 5],
-		[[-1, 0], 10],
-		[[-1,-1], 11],
-		[[ 0,-1], 23],
-		[[ 1,-1], 25]
 
-	];
+		/**
+		 * OK, we're ready. The idea is to keep generating X,Y coordinate
+		 * cells. On each one, check the previous cells and sum the values
+		 * of those cells that are adjacent to the new one. Do this until
+		 * the sum is greater than the value passed to this solve function.
+		 */
+		let result = R.until(
+			cells => { return R.last(cells).sum > x; },
+			cells => {
+				let newcell = R.clone(R.last(cells)),
+					relCoords = gen.next().value;
 
-// Temporary - invoke the solver
-console.log(solve());
+				// Give the new cell the right X,Y coordinates
+				newcell.x = newcell.x + relCoords[0];
+				newcell.y = newcell.y + relCoords[1];
 
-// Execute tests, all should return true
-// console.log(R.all(([i, o]) => solve(i) == o, tests));
+				// Work out the list of adjacent cells
+				let adjacentCells = R.filter(isAdjacentCell(newcell), cells);
+				newcell.sum = R.reduce((a, x) => a + x.sum, 0, adjacentCells);
+				cells.push(newcell);
+				return cells;
+			}
+		)([ { x : 0, y : 0, sum : 1 } ]);
+
+		return R.last(result).sum;
+
+	};
 
 // Invoke solution on input
-// require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
-// 	console.log(solve(data));
-// });
+require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
+	console.log(solve(data));
+});
