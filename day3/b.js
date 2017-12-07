@@ -67,7 +67,17 @@ const
 		// Instantiate the generator
 		const gen = relativeStep();
 		
-		return gen.next().value;
+		// Show the first 50 X,Y coordinates of the spiral
+		R.reduce((a, _) => {
+			let [x, y] = a,
+				[xn, yn] = gen.next().value;
+			x = x + xn;
+			y = y + yn;
+			console.log([x, y]);
+			return [x, y];
+		}, [0, 0], R.range(0,50));
+
+		return 1;
 
 	},
 
