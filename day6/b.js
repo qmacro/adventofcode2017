@@ -1,10 +1,10 @@
 // Advent of Code
-// Day 6 Puzzle A
+// Day 6 Puzzle B
 
 const
 	R = require('ramda'),
 
-	splitChar = "-",
+	splitChar = "\t",
 
 	redistribute = xs => {
 		let highestValue = R.reduce(R.max, 0, xs),
@@ -28,9 +28,8 @@ const
 	// Solution
 	solve = (x) => {
 
-		return R.dec(R.length(R.until(
+		let iterations = R.until(
 			xs => {
-				console.log(xs);
 				return R.indexOf(R.head(xs), R.tail(xs)) > -1;
 			},
 			xs => {
@@ -39,18 +38,16 @@ const
 				return R.prepend(toPattern(redistribute(fromPattern(R.head(xs)))), xs);
 			},
 			[x]
-		)))
+		);
+		return R.lastIndexOf(R.head(iterations), iterations);
 	},
 
 	tests = [
-		["0-2-7-0", 5]
-		//["0	2	7	0", 5]
+		["0\t2\t7\t0", 4]
 	];
 
 // Execute tests, all should return true
 console.log(R.all(([i, o]) => solve(i) === o, tests));
-
-return;
 
 // Invoke solution on input
 require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
