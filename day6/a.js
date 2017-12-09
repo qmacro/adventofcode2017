@@ -32,7 +32,7 @@ const
 			},
 			xs => {
 				const fromPattern = x => R.map(x => x * 1, R.split("\t", x)),
-							toPattern = xs => R.join("\t", xs);
+					toPattern = xs => R.join("\t", xs);
 				return R.prepend(toPattern(redistribute(fromPattern(R.head(xs)))), xs);
 			},
 			[x]
@@ -48,6 +48,5 @@ console.log(R.all(([i, o]) => solve(i) === o, tests));
 
 // Invoke solution on input
 require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
-	console.log("!" + data + "!");
 	console.log(solve(data));
 });
