@@ -13,21 +13,18 @@ const
 	solve = x => {
 
 		let lines = R.split(/\n/, x);
-		console.log(
-			R.reduce(
-				(a, x) => {
-					let parsed = x.match(/^([a-z]+) \((\d+)\)( -> (.+)$)?/);
-					a[parsed[PROGRAM]] = {
-						weight : parsed[WEIGHT],
-						supports : parsed[SUBPROGRAMS] ? R.split(/, /, parsed[SUBPROGRAMS]) : []
-					}
-					return a;
-				},
-				{},
-				lines
-			)
+		return R.reduce(
+			(a, x) => {
+				let parsed = x.match(/^([a-z]+) \((\d+)\)( -> (.+)$)?/);
+				a[parsed[PROGRAM]] = {
+					weight : parsed[WEIGHT],
+					supports : parsed[SUBPROGRAMS] ? R.split(/, /, parsed[SUBPROGRAMS]) : []
+				}
+				return a;
+			},
+			{},
+			lines
 		);
-		return true;
 
 	};
 
