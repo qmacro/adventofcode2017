@@ -1,5 +1,5 @@
 // Advent of Code
-// Day 7 Puzzle B
+// Day 7 Puzzle A
 
 const
 	R = require('ramda'),
