@@ -20,6 +20,8 @@ const
 
 			lines = R.split(/\n/, x);
 
+			rootProgram = "dgoocsw", // From 7A
+
 			data = R.reduce(
 				(a, x) => {
 					let parsed = x.match(/^([a-z]+) \((\d+)\)( -> (.+)$)?/);
@@ -34,9 +36,11 @@ const
 				lines
 			);
 
-			console.log(supports(data, 'ugml'));
-			console.log(R.map(totalWeight(data), supports(data, "tknk")));
-
+			let node = rootProgram;
+			console.log(
+				supports(data, node),
+				R.map(totalWeight(data), supports(data, node))
+			);
 
 		return data;
 
@@ -46,14 +50,6 @@ const
 
 
 // Invoke solution on input
-require('fs').readFile(__dirname + '/testinput.dat', 'utf8', (err, data) => {
+require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
 	let intermediate = solve(data);
-	// console.log(
-	// 	R.pipe(
-	// 		R.filter(x => x.supports.length),
-	// 		R.values,
-	// 		R.reduce((a, x) => R.concat(graphViz(x), a), []),
-	// 		R.join("")
-	// 	)(intermediate)
-	// );
 });
