@@ -17,6 +17,7 @@ const
 			(a, x) => {
 				let parsed = x.match(/^([a-z]+) \((\d+)\)( -> (.+)$)?/);
 				a[parsed[PROGRAM]] = {
+					program : parsed[PROGRAM],
 					weight : parsed[WEIGHT],
 					supports : parsed[SUBPROGRAMS] ? R.split(/, /, parsed[SUBPROGRAMS]) : []
 				}
@@ -26,9 +27,19 @@ const
 			lines
 		);
 
-	};
+	},
+
+	graphViz = x => R.map(y => `  "${x.program}" -> "${y}"\n`, x.supports);
 
 // Invoke solution on input
-require('fs').readFile(__dirname + '/testinput.dat', 'utf8', (err, data) => {
-	console.log(solve(data));
+require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
+	let intermediate = solve(data);
+	console.log(
+		R.pipe(
+			R.filter(x => x.supports.length),
+			R.values,
+			R.reduce((a, x) => R.concat(graphViz(x), a), []),
+			R.join("")
+		)(intermediate)
+	);
 });
