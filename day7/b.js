@@ -12,9 +12,9 @@ const
 	// Solution
 	solve = x => {
 
-		const totalWeight = x => {
-				console.log("TW", x.supports)
-				return x.weight + R.reduce(R.add(totalWeight), 0, x.supports);
+		const totalWeight = (data, item) => {
+				console.log("TW", item, data);
+				// return x.weight + R.reduce(R.add(totalWeight), 0, x.supports);
 			},
 			lines = R.split(/\n/, x);
 			data = R.reduce(
@@ -31,7 +31,7 @@ const
 				lines
 			);
 
-			console.log(totalWeight(data['ugml']))
+			totalWeight(data, 'ugml')
 
 		return data;
 
