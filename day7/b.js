@@ -12,34 +12,44 @@ const
 	// Solution
 	solve = x => {
 
-		let lines = R.split(/\n/, x);
-		return R.reduce(
-			(a, x) => {
-				let parsed = x.match(/^([a-z]+) \((\d+)\)( -> (.+)$)?/);
-				a[parsed[PROGRAM]] = {
-					program : parsed[PROGRAM],
-					weight : parsed[WEIGHT],
-					supports : parsed[SUBPROGRAMS] ? R.split(/, /, parsed[SUBPROGRAMS]) : []
-				}
-				return a;
+		const totalWeight = x => {
+				console.log("TW", x.supports)
+				return x.weight + R.reduce(R.add(totalWeight), 0, x.supports);
 			},
-			{},
-			lines
-		);
+			lines = R.split(/\n/, x);
+			data = R.reduce(
+				(a, x) => {
+					let parsed = x.match(/^([a-z]+) \((\d+)\)( -> (.+)$)?/);
+					a[parsed[PROGRAM]] = {
+						program : parsed[PROGRAM],
+						weight : parsed[WEIGHT] * 1,
+						supports : parsed[SUBPROGRAMS] ? R.split(/, /, parsed[SUBPROGRAMS]) : []
+					}
+					return a;
+				},
+				{},
+				lines
+			);
+
+			console.log(totalWeight(data['ugml']))
+
+		return data;
 
 	},
 
 	graphViz = x => R.map(y => `  "${x.program}" -> "${y}"\n`, x.supports);
 
+
 // Invoke solution on input
-require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
+require('fs').readFile(__dirname + '/testinput.dat', 'utf8', (err, data) => {
 	let intermediate = solve(data);
-	console.log(
-		R.pipe(
-			R.filter(x => x.supports.length),
-			R.values,
-			R.reduce((a, x) => R.concat(graphViz(x), a), []),
-			R.join("")
-		)(intermediate)
-	);
+	intermediate;
+	// console.log(
+	// 	R.pipe(
+	// 		R.filter(x => x.supports.length),
+	// 		R.values,
+	// 		R.reduce((a, x) => R.concat(graphViz(x), a), []),
+	// 		R.join("")
+	// 	)(intermediate)
+	// );
 });
