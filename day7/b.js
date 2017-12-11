@@ -12,11 +12,14 @@ const
 	// Solution
 	solve = x => {
 
-		const totalWeight = (data, item) => {
-				console.log("TW", item, data);
-				// return x.weight + R.reduce(R.add(totalWeight), 0, x.supports);
-			},
+		const totalWeight = R.curry((data, item) => {
+				return data[item].weight + R.reduce((a, x) => a + totalWeight(data, x), 0, data[item].supports);
+			}),
+			
+			supports = (data, item) => data[item].supports,
+
 			lines = R.split(/\n/, x);
+
 			data = R.reduce(
 				(a, x) => {
 					let parsed = x.match(/^([a-z]+) \((\d+)\)( -> (.+)$)?/);
@@ -24,14 +27,16 @@ const
 						program : parsed[PROGRAM],
 						weight : parsed[WEIGHT] * 1,
 						supports : parsed[SUBPROGRAMS] ? R.split(/, /, parsed[SUBPROGRAMS]) : []
-					}
+					};
 					return a;
 				},
 				{},
 				lines
 			);
 
-			totalWeight(data, 'ugml')
+			console.log(supports(data, 'ugml'));
+			console.log(R.map(totalWeight(data), supports(data, "tknk")));
+
 
 		return data;
 
@@ -43,7 +48,6 @@ const
 // Invoke solution on input
 require('fs').readFile(__dirname + '/testinput.dat', 'utf8', (err, data) => {
 	let intermediate = solve(data);
-	intermediate;
 	// console.log(
 	// 	R.pipe(
 	// 		R.filter(x => x.supports.length),
