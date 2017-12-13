@@ -4,28 +4,73 @@
 const
 	R = require('ramda'),
 
+	nor = R.compose(R.not, R.or),
+
 	// Solution
 	solve = x => {
 
 		"use strict";
 
-		return true;
+		let result = R.reduce((a, x) => {
+			let negationTriggered = false;
+			switch (x) {
+				case "!":
+					a.negation = R.not(a.negation);
+					negationTriggered = a.negation;
+					break;
+				case "<":
+					a.garbage = R.not(a.negation);
+					break;
+				case ">":
+					a.garbage = a.negation ? a.garbage : false;
+					break;
+				case "{":
+					if (nor(a.negation, a.garbage)) {
+						a.level++;
+						a.score += a.level;
+					}
+					break;
+				case "}":
+					if (nor(a.negation, a.garbage)) {
+						a.level--;
+					}
+					break;
+				default:
+					// NOP
+			};
+
+			// Turn off negation again if appropriate
+			if (R.and(a.negation, R.not(negationTriggered))) {
+				a.negation = false;
+			}
+
+			return a;
+
+		}, {
+			level : 0,
+			score : 0,
+			garbage : false,
+			negation : false
+		}, x);
+
+		 return result.score;
 
 	},
 
 	tests = [
 		["{}", 1],
-		["{{{}}}", 3],
-		["{{},{}}", 3],
-		["{{{},{},{{}}}}", 6],
-		["{<{},{},{{}}>}", 1],
+		["{{{}}}", 6],
+		["{{},{}}", 5],
+		["{{{},{},{{}}}}", 16],
 		["{<a>,<a>,<a>,<a>}", 1],
-		["{{<a>},{<a>},{<a>},{<a>}}", 5],
-		["{{<!>},{<!>},{<!>},{<a>}}", 2]
+		["{{<ab>},{<ab>},{<ab>},{<ab>}}", 9],
+		["{{<!!>},{<!!>},{<!!>},{<!!>}}", 9],
+		["{{<a!>},{<a!>},{<a!>},{<ab>}}", 3]
 	];
 
 // Execute tests, all should return true
 console.log(R.all(([i, o]) => solve(i) == o, tests));
+console.log(R.filter(test => solve(test[0]) !== test[1], tests));
 
 // Invoke solution on input
 // require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
