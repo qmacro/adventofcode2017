@@ -12,11 +12,14 @@ const
 		"use strict";
 
 		let result = R.reduce((a, x) => {
-			let negationTriggered = false;
+			if (a.skipNext) {
+				a.skipNext = false;
+				return a;
+			}
+
 			switch (x) {
 				case "!":
-					a.negation = R.not(a.negation);
-					negationTriggered = a.negation;
+					a.skipNext = true;
 					break;
 				case "<":
 					a.garbage = R.not(a.negation);
@@ -39,18 +42,13 @@ const
 					// NOP
 			};
 
-			// Turn off negation again if appropriate
-			if (R.and(a.negation, R.not(negationTriggered))) {
-				a.negation = false;
-			}
-
 			return a;
 
 		}, {
 			level : 0,
 			score : 0,
 			garbage : false,
-			negation : false
+			skipNext : false
 		}, x);
 
 		 return result.score;
@@ -65,7 +63,8 @@ const
 		["{<a>,<a>,<a>,<a>}", 1],
 		["{{<ab>},{<ab>},{<ab>},{<ab>}}", 9],
 		["{{<!!>},{<!!>},{<!!>},{<!!>}}", 9],
-		["{{<a!>},{<a!>},{<a!>},{<ab>}}", 3]
+		["{{<a!>},{<a!>},{<a!>},{<ab>}}", 3],
+    ["{{<!!'!!!>},<>},{<o!>},<u!!i!!'!>,<!!!>,e{'e!!!>},<!i>}}", 5]
 	];
 
 // Execute tests, all should return true
@@ -73,6 +72,6 @@ console.log(R.all(([i, o]) => solve(i) == o, tests));
 console.log(R.filter(test => solve(test[0]) !== test[1], tests));
 
 // Invoke solution on input
-// require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
-// 	console.log(solve(data));
-// });
+require('fs').readFile(__dirname + '/input.dat', 'utf8', (err, data) => {
+	console.log(solve(data));
+});
